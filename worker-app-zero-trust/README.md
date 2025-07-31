@@ -1,4 +1,4 @@
-# Secure proxy .ENV
+# Secure proxy .env
 
 This is a Cloudflare Worker with Secure proxy .ENV
 
