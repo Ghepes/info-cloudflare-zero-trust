@@ -45,6 +45,12 @@ wrangler connect --account
 wrangler deploy .
 
 
+add manual secret value to the worker cloudflare
+CF_ACCESS_CLIENT_ID=CF-Access-Client-Id: 229e9a3fbebf15f65e974e343b8c203d.access 
+
+CF_ACCESS_CLIENT_SECRET=CF-Access-Client-Secret: f29dbed84c02e8b173498b0996ad71ee466eb83535fe27b0ff8bbfe437e8c494
+
+
 
 
 
