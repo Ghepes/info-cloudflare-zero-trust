@@ -41,7 +41,8 @@ secure proxy.
 
 ### command is used to link a Cloudflare account with the Wrangler CLI
 wrangler connect --account 
-
+3. Run `wrangler login` to login to your Cloudflare account in wrangler
+4. Run `wrangler deploy` to publish the .ENV secure proxy to Cloudflare Workers
 wrangler deploy .
 
 
