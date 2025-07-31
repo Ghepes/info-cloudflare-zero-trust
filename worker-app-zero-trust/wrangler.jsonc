@@ -1,0 +1,27 @@
+// wrangler.jsonc
+{
+  "$schema": "https://unpkg.com/@cloudflare/wrangler@3.61.0/config.schema.json",
+  "name": "api-proxy-phonoa",
+  "main": "src/index.js",
+  "compatibility_date": "2024-07-30",
+  "compatibility_flags": [
+    "nodejs_compat" // Poate fi necesar daca folosești anumite module Node.js în viitor
+  ],
+  "dev": {
+    "ip": "0.0.0.0"
+  },
+  "vars": {
+    // Here you can define non-secret environment variables (e.g. a public API_KEY)
+    // "MY_PUBLIC_VAR": "some-value"
+  },
+  "secrets": [
+    "CF_ACCESS_CLIENT_ID",  // <--- List the names of the secrets here
+    "CF_ACCESS_CLIENT_SECRET"
+  ],
+  "routes": [
+    {
+      "pattern": "api-proxy.domain.com/*", // <--- Add subdomain here for worker or the domain worker from cloudflare
+      "zone_id": "xxxxxxxxxxxxxxxxxxx" // <---  ID zone Cloudflare 
+    }
+  ]
+}

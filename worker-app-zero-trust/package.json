@@ -1,0 +1,32 @@
+{
+  "name": "api-proxy-phonoa",
+  "version": "0.0.1",
+  "private": true,
+  "description": "worker start info end file  to add Zero Trust cloudflare to  extern domain file  html.  ID zero trust to worker",
+  "keywords": [
+    "zero",
+    "trust",
+    "cloudflare",
+    "worker"
+  ],
+  "homepage": "https://github.com/ghepes/worker-app-zero-trust#readme",
+  "bugs": {
+    "url": "https://github.com/ghepes/worker-app-zero-trust/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ghepes/worker-app-zero-trust.git"
+  },
+  "license": "MIT",
+  "author": "Ghepes",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "start": "wrangler dev"
+  },
+  "devDependencies": {
+    "wrangler": "^4.26.1"
+  }
+}
