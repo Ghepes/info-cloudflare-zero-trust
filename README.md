@@ -18,3 +18,9 @@ CF_ACCESS_CLIENT_ID=CF-Access-Client-Id: 22xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.access
 
 CF_ACCESS_CLIENT_SECRET=CF-Access-Client-Secret: f20xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
+
+
+CF_ACCESS_CLIENT_ID=CF-Access-Client-Id
+CF_ACCESS_CLIENT_SECRET=CF-Access-Client-Secret
+ Are to secure important parts of the domain and website.
+ The Zero Trust Dashboard can appear without these IDs added!
