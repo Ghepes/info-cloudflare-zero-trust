@@ -1,62 +1,62 @@
 // src/index.js
 
-/**
- * secure proxy
- */
-
 export default {
-  /**
-   * The 'fetch' handler is the main entry point of the Worker.
-   * Processes incoming HTTP requests to the HTML webapp.
-   *
-   * @param {Request} request HTTP Worker request.
-   * @param {Object} env The object containing the environment variables (including secrets).
-   * @param {ExecutionContext} ctx The execution context of the request.
-   */
   async fetch(request, env, ctx) {
-    // Clone the original request so you can modify it
-    const newRequest = new Request(request);
+    // List of domains that are allowed to communicate with this Worker
+    const allowedOrigins = [
+      'https://dashboard.phonoa.com',
+      'https://blob.phonoa.com' 
+    ];
 
-
-   // These are taken from the secrets you added with `wrangler secret put`.
-   // Make sure you define them as CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET.
-    newRequest.headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
-    newRequest.headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
-
-    // These headers are essential for the browser to interpret your HTML application.
-    // to be able to receive responses from this Worker.
+    const origin = request.headers.get('Origin');
     const corsHeaders = {
-      'Access-Control-Allow-Origin': 'https://dashboard.domain.com', // <--- REPLACE WITH THE ACTUAL APPLICATION DOMAIN HTML EXTERN APP
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization', // any custom headers sent by the frontend
-      'Access-Control-Max-Age': '86400',
+      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
     };
 
-    // Respond to OPTIONS requests (preflight)
+    if (allowedOrigins.includes(origin)) {
+      corsHeaders['Access-Control-Allow-Origin'] = origin;
+    }
+
     if (request.method === 'OPTIONS') {
       return new Response(null, { status: 204, headers: corsHeaders });
     }
 
+    const url = new URL(request.url);
+
+    // =================================================================
+    // ROUTE FOR THE NEW APPLICATION (blob.phonoa.com)
+    // =================================================================
+    if (url.pathname === '/get-api-key') {
+      if (!env.GCS_API_KEY) {
+        return new Response(JSON.stringify({ error: 'The GCS_API_KEY secret is not configured.' }), {
+          status: 500,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+      return new Response(JSON.stringify({ apiKey: env.GCS_API_KEY }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // =================================================================
+    // ROUTE FOR THE OLD APPLICATION (dashboard.phonoa.com)
+    // =================================================================
+    
+    // For any other path, it acts as a proxy
     try {
-    // Construct the destination URL of the actual request.
-    // The worker will redirect the request to the actual hostname of your service,
-    // using the same path as the original request (after removing the /proxy prefix).
-      const url = new URL(request.url);
+      const newRequest = new Request(request);
+      newRequest.headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
+      newRequest.headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
 
-      // Remove '/proxy' from the URL path before sending to the destination.
-      // For example, 'https://worker-domain.com/proxy/api/data' becomes '/api/data'.
-      url.pathname = url.pathname.replace(/^\/proxy/, '');
+      const proxyUrl = new URL(request.url);
+      // We assume that the proxy is used for all paths that are not /get-api-key
+      proxyUrl.hostname = 'dashboard.phonoa.com'; 
+      proxyUrl.protocol = 'https:';
 
-      // --- OBLIGATORIU: Seteaza hostname-ul serviciului tau real ---
-      // Acesta este serviciul (ex: API-ul tau backend) care necesita token-urile de autentificare.
-      url.hostname = 'dashboard.domain.com'; // <--- REPLACE WITH THE ACTUAL APPLICATION DOMAIN HTML EXTERN APP
-      url.protocol = 'https:'; // HTTPS
-
-      // Send the modified request (with authentication headers) to the real destination
-      const response = await fetch(url.toString(), newRequest);
-
-      // Clone the response from the destination and add CORS headers
+      const response = await fetch(proxyUrl.toString(), newRequest);
       const newResponse = new Response(response.body, response);
+      
       Object.entries(corsHeaders).forEach(([key, value]) => {
           newResponse.headers.set(key, value);
       });
@@ -65,8 +65,8 @@ export default {
 
     } catch (error) {
       console.error('Error proxying request:', error);
-      // Generic error message for the public, for security.
-      return new Response(`Internal Server Error: ${error.message || 'Could not process request.'}`, { status: 500 });
+      return new Response(`Internal Server Error`, { status: 500 });
     }
   },
 };
+// =================================================================
