@@ -1,18 +1,56 @@
-# info-cloudflare-zero-trust
+# Secure proxy .env
+
+This is a Cloudflare Worker with Secure proxy .ENV
+
+This is an example project made to be used as a quick start into building .ENV 
+secure proxy.
 
 
-The most important thing to add Zero Trust Cloudflare to an external domain is .ENV:
+## Get started
 
-" CF_ACCESS_CLIENT_ID" and " CF_ACCESS_CLIENT_SECRET"
+1. Sign up for [Cloudflare Workers](https://workers.dev). The free tier is more than enough for most use cases.
+2. Clone this project and install dependencies with `npm install`
+3. Run `wrangler login` to login to your Cloudflare account in wrangler
+4. Run `wrangler deploy` to publish the .ENV secure proxy to Cloudflare Workers
 
-If you have an HTML app on that domain. You need to run a Worker in cloudflare and attach the external html domain. (much simpler if the HTML domain is in cloudflare attached. You don't need to add anything to the html app and you just need to run the worker with " CF_ACCESS_CLIENT_ID" and " CF_ACCESS_CLIENT_SECRET")
+## Project structure
+
+1. Your main router is defined in `src/index.js`.
+
+   * The 'fetch' handler is the main entry point of the Worker.
+   * Processes incoming HTTP requests to the HTML webapp.
+
+   *   {Request} request HTTP Worker request.
+   *   {Object} env The object containing the environment variables (including secrets).
+   *   {ExecutionContext} ctx The execution context of the request.
+
+   * These are taken from the secrets you added with `wrangler secret put`.
+   * Make sure you define them as CF_ACCESS_CLIENT_ID and CF_ACCESS_CLIENT_SECRET.
+   * newRequest.headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
+   * newRequest.headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
 
 
-info setting worker to cloudflare to this REPO GITHUB: worker-app-zero-trust
+## Development
+
+1. Run `wrangler dev` to start a local instance of the API.
+2. Open `http://localhost:8787/` in your browser to see the Swagger interface where you can try the endpoints.
+3. Changes made in the `src/` folder will automatically trigger the server to reload, you only need to refresh the Swagger interface.
 
 
+## Worker deploy
 
-### add manual secret value to the worker cloudflare
+### command is used to link a Cloudflare account with the Wrangler CLI
+
+wrangler connect --account 
+
+3. Run `wrangler login` to login to your Cloudflare account in wrangler
+ 
+4. Run `wrangler deploy` to publish the .ENV secure proxy to Cloudflare Workers
+   
+wrangler deploy .
+
+
+add manual secret value to the worker cloudflare
 
 CF_ACCESS_CLIENT_ID=CF-Access-Client-Id: 22xxxxxxxxxxxxxxxxxxxxxxxxxxxxx.access
 
@@ -20,7 +58,6 @@ CF_ACCESS_CLIENT_SECRET=CF-Access-Client-Secret: f20xxxxxxxxxxxxxxxxxxxxxxxxxxxx
 
 
 
-CF_ACCESS_CLIENT_ID=CF-Access-Client-Id
-CF_ACCESS_CLIENT_SECRET=CF-Access-Client-Secret
- Are to secure important parts of the domain and website.
- The Zero Trust Dashboard can appear without these IDs added!
+
+
+
