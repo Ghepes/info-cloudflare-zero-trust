@@ -3,10 +3,8 @@
   "$schema": "https://unpkg.com/@cloudflare/wrangler@latest/config.schema.json",
   "name": "api-proxy-phonoa",
   "main": "src/index.js",
-  "compatibility_date": "2025-08-10",
-  "compatibility_flags": [
-    "nodejs_compat" //May be necessary if you use certain Node.js modules in the future
-  ],
+  "compatibility_date": "2024-07-30", // <--- Set the date to the current year
+  "nodejs_compat": true, // May be necessary if you use certain Node.js modules in the future
   "dev": {
     "ip": "0.0.0.0"
   },

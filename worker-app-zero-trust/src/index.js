@@ -2,7 +2,7 @@
 
 export default {
   async fetch(request, env, ctx) {
-    // List of domains that are allowed to communicate with this Worker
+    // Lista cu domeniile care au voie să comunice cu acest Worker
     const allowedOrigins = [
       'https://dashboard.phonoa.com',
       'https://blob.phonoa.com' 
@@ -25,11 +25,11 @@ export default {
     const url = new URL(request.url);
 
     // =================================================================
-    // ROUTE FOR THE NEW APPLICATION (blob.phonoa.com)
+    // RUTA PENTRU APLICAȚIA NOUĂ (blob.phonoa.com)
     // =================================================================
     if (url.pathname === '/get-api-key') {
       if (!env.GCS_API_KEY) {
-        return new Response(JSON.stringify({ error: 'The GCS_API_KEY secret is not configured.' }), {
+        return new Response(JSON.stringify({ error: 'Secretul GCS_API_KEY nu este configurat.' }), {
           status: 500,
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
@@ -40,17 +40,16 @@ export default {
     }
 
     // =================================================================
-    // ROUTE FOR THE OLD APPLICATION (dashboard.phonoa.com)
+    // RUTA PENTRU APLICAȚIA VECHE (dashboard.phonoa.com) - PROXY
     // =================================================================
     
-    // For any other path, it acts as a proxy
+    // Pentru orice altă cale, acționează ca un proxy
     try {
       const newRequest = new Request(request);
       newRequest.headers.set('CF-Access-Client-Id', env.CF_ACCESS_CLIENT_ID);
       newRequest.headers.set('CF-Access-Client-Secret', env.CF_ACCESS_CLIENT_SECRET);
 
       const proxyUrl = new URL(request.url);
-      // We assume that the proxy is used for all paths that are not /get-api-key
       proxyUrl.hostname = 'dashboard.phonoa.com'; 
       proxyUrl.protocol = 'https:';
 
@@ -69,4 +68,3 @@ export default {
     }
   },
 };
-// =================================================================
