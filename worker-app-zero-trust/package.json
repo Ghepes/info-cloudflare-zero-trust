@@ -1,6 +1,6 @@
 {
   "name": "api-proxy-phonoa",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "description": "worker start info end file  to add Zero Trust cloudflare to  extern domain file  html.  ID zero trust to worker",
   "keywords": [
