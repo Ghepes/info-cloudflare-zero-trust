@@ -9,7 +9,7 @@
     "ip": "0.0.0.0"
   },
   "vars": {
-    // Here you can define non-secret environment variables (e.g. a public API_KEY)
+    // Here define non-secret environment variables (e.g. a public API_KEY)
     // "MY_PUBLIC_VAR": "some-value"
   },
   "secrets": [
