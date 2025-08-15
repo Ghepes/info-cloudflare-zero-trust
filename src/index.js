@@ -5,7 +5,9 @@ export default {
     // Lista cu domeniile care au voie să comunice cu acest Worker
     const allowedOrigins = [
       'https://dashboard.phonoa.com',
-      'https://blob.phonoa.com' 
+      'https://blob.phonoa.com',
+      'https://x.clipo.live',
+      'https://clipo.live'  
     ];
 
     const origin = request.headers.get('Origin');
